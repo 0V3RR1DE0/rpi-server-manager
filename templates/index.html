@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Raspberry Pi Server Management Suite</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Raspberry Pi Server Management Suite</h1>
+    </header>
+
+    <div class="container">
+        <h2>Tools</h2>
+        <ul>
+            <li><a href="{{ url_for('system_monitor_route') }}" class="rounded-link">System Monitor</a></li>
+            <!-- Add other specific system_monitor_route -->
+            <li><a href="{{ url_for('network_tools') }}" class="rounded-link">Network Tools</a></li>
+            <!-- Add other specific network_tools -->
+            <li><a href="{{ url_for('file_share') }}" class="rounded-link">File Share</a></li>
+            <!-- Add other specific file_share -->
+            <!-- Add more links for additional tools -->
+        </ul>
+    </div>
+
+    <div class="container">
+        <h2>User Options</h2>
+        {% if session.get('logged_in') %}
+            <form method="POST" action="{{ url_for('change_password') }}" class="password-form">
+                <div class="form-group">
+                    <label for="current_password">Current Password:</label>
+                    <input type="password" name="current_password" id="current_password" required>
+                </div>
+    
+                <div class="form-group">
+                    <label for="new_password">New Password:</label>
+                    <input type="password" name="new_password" id="new_password" required>
+                </div>
+    
+                <button type="submit" class="custom-submit-button">Change Password</button>
+            </form>
+            <br>
+            <a href="{{ url_for('logout') }}" class="rounded-link">Logout</a>
+        {% else %}
+            <p>Please log in to access user options.</p>
+        {% endif %}
+    </div>
+    
+
+    <!-- Add additional content or sections as needed -->
+
+</body>
+</html>

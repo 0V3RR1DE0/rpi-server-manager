@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Raspberry Pi Server Network Tools</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Raspberry Pi Server Network Tools</h1>
+    </header>
+
+    <div class="container">
+        <h2>Tools</h2>
+        <ul>
+            <li><a href="{{ url_for('network_logs') }}" class="rounded-link">Network Logs</a></li>
+            <!-- Add content and logic specific to Network Logs -->
+
+            <li><a href="{{ url_for('network_statistics') }}" class="rounded-link">Network Statistics</a></li>
+            <!-- Add more list items for additional network tools -->
+        </ul>
+
+        <!-- Add a "Back to Home" button -->
+        <a href="{{ url_for('home') }}" class="rounded-link">Back to Home</a>
+    </div>
+
+</body>
+</html>

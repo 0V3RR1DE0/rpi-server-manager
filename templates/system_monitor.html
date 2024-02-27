@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Raspberry Pi Server System Monitor</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Raspberry Pi Server System Monitor</h1>
+    </header>
+
+    <div class="container">
+        <h2>System Information</h2>
+        <p id="cpuUsage">CPU Usage: {{ system_info.cpu_usage }}%</p>
+        <p id="memoryUsage">Memory Usage: {{ system_info.memory_usage }}%</p>
+   
+        <h3>Disks Information</h3>
+        <ul>
+            {% for disk in system_info.disk_info %}
+                <li>
+                    <strong>Drive:</strong> {{ disk.drive }}<br>
+                    <strong>Mountpoint:</strong> {{ disk.mountpoint }}<br>
+                    <strong>Total Space:</strong> {{ disk.total_space }} GB<br>
+                    <strong>Used Space:</strong> {{ disk.used_space }} GB<br>
+                    <strong>Free Space:</strong> {{ disk.free_space }} GB<br>
+                </li>
+            {% endfor %}
+        </ul>
+    
+        <!-- Add more system information as needed -->
+        
+        <!-- Add a "Back to Home" button -->
+        <a href="{{ url_for('home') }}" class="rounded-link">Back to Home</a>
+    </div>
+    
+
+    <script>
+        function updateSystemInfo() {
+            // Fetch system information from the server
+            fetch("{{ url_for('system_monitor_route') }}")
+                .then(response => response.text())
+                .then(html => {
+                    // Create a temporary element to parse the HTML
+                    const tempElement = document.createElement('div');
+                    tempElement.innerHTML = html;
+
+                    // Extract the system information from the updated HTML
+                    const cpuUsage = tempElement.querySelector('#cpuUsage').innerText;
+                    const memoryUsage = tempElement.querySelector('#memoryUsage').innerText;
+
+                    // Update the displayed system information
+                    document.getElementById("cpuUsage").innerText = cpuUsage;
+                    document.getElementById("memoryUsage").innerText = memoryUsage;
+                })
+                .catch(error => console.error("Error fetching system information:", error));
+        }
+
+        // Update system information every 5 seconds (adjust as needed)
+        setInterval(updateSystemInfo, 3000);
+
+        // Initial update when the page loads
+        updateSystemInfo();
+    </script>
+
+</body>
+</html>
