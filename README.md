@@ -7,6 +7,7 @@ This is a simple web application for managing a Raspberry Pi server. Users can u
 - [x] View server generic info [disk space, cpu usage, others]
 - [x] Upload files to the server.
 - [x] View and download shared files.
+- [x] Dynamic File Tabs
 - [x] Responsive design for both desktop and mobile devices.
 
 ## Technologies Used
@@ -34,6 +35,8 @@ This is a simple web application for managing a Raspberry Pi server. Users can u
 
 4. Open your web browser and navigate to `http://localhost:5000` to access the application.
 
+5. Default login password is `123456`
+
 ## Usage
 - Upon accessing the application, users can upload files using the provided form.
 - Shared files are displayed on the main page, where users can click on them to download.
@@ -47,6 +50,12 @@ This is a simple web application for managing a Raspberry Pi server. Users can u
 - [ ] Integrate with external storage services (Google Drive, Dropbox)
 - [ ] Implement real-time file sharing notifications
 - [ ] Enhance UI/UX design
+
+## Features that need to be fixed
+- [ ] Alerts/Notifications
+- [ ] Network Logs
+- [ ] Timeout to all html files
+- [ ] No login bypass in web panel
 
 ## Contributing
 Contributions are welcome! If you'd like to contribute to this project, please fork the repository and submit a pull request with your changes.
