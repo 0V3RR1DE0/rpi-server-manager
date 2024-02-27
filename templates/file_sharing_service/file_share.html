@@ -3,12 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>File Sharing Web Server</title>
+    <title>Raspberry Pi Server File Share</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
+    <header>
+        <h1>Raspberry Pi Server File Share</h1>
+    </header>
     <div class="container">
-        <h1>File Sharing Web Server</h1>
+        <h2>File Share</h2>
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
                 {% for category, message in messages %}
