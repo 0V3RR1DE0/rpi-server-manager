@@ -41,6 +41,7 @@ This is a simple web application for managing a Raspberry Pi server. Users can u
 
 ## Planned Features
 - [ ] Implement user authentication
+- [ ] Better overall security
 - [ ] Add file management capabilities (delete, move, rename)
 - [ ] Improve server monitoring functionality
 - [ ] Integrate with external storage services (Google Drive, Dropbox)
