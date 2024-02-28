@@ -43,6 +43,8 @@ This is a simple web application for managing a Raspberry Pi server. Users can u
 - Users can also view any uploaded files by clicking the "View Files" link.
 
 ## Planned Features
+- [ ] Client Program
+    - Allows you to manage multiple computers.
 - [ ] Implement user authentication
 - [ ] Better overall security
 - [ ] Add file management capabilities (delete, move, rename)
