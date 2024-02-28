@@ -57,7 +57,7 @@ This is a simple web application for managing a Raspberry Pi server. Users can u
 - [ ] Alerts/Notifications
 - [ ] Network Logs
 - [ ] Timeout to all html files
-- [ ] No login bypass in web panel
+- [x] No login bypass in web panel
 
 ## Contributing
 Contributions are welcome! If you'd like to contribute to this project, please fork the repository and submit a pull request with your changes.
