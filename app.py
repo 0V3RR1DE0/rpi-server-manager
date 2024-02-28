@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, session, redirect, flash, url
 from flask_bcrypt import Bcrypt
 from datetime import timedelta
 from tools import system_monitor
+from functools import wraps
 import os
 
 app = Flask(__name__)
@@ -40,6 +41,20 @@ except FileNotFoundError:
 # Set Flask app configurations
 app.secret_key = secret_key
 app.permanent_session_lifetime = timedelta(minutes=5)
+
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not session.get('logged_in'):
+            flash('Please log in to access this page.', 'info')
+            return redirect(url_for('login'))
+        return f(*args, **kwargs)
+    return decorated_function
+
+@app.before_request
+def before_request():
+    if request.endpoint and request.endpoint != 'login' and not session.get('logged_in'):
+        return redirect(url_for('login'))
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
