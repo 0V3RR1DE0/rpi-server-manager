@@ -1,3 +1,5 @@
+/* styles.css */
+
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     line-height: 1.6;
@@ -19,6 +21,23 @@ header {
     background-color: #fff; /* Updated to white background */
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.logs-container {
+    margin-top: 20px;
+}
+
+.logs-list {
+    list-style-type: none;
+    padding: 0;
+}
+
+.logs-list li {
+    margin-bottom: 10px;
+    padding: 10px;
+    background-color: #ffffff; /* White background for log entries */
+    border-radius: 5px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1); /* Add a shadow for depth */
 }
 
 h1, h2, h3, h4 {

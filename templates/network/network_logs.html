@@ -1,28 +1,25 @@
+<!-- network_logs.html -->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Network Logs</title>
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <script src="{{ url_for('static', filename='js/tools/network_logs.js') }}"></script>
 </head>
 <body>
     <header>
         <h1>Network Logs</h1>
     </header>
-
     <div class="container">
-        <h2>Logs</h2>
-        <ul>
-            {% for log_entry in network_logs %}
-                <li>{{ log_entry }}</li>
-            {% endfor %}
-        </ul>
-
-        <!-- Add a "Back to Network Tools" button -->
+        <div class="logs-container" id="logs-container">
+            <ul id="logs-list" class="logs-list"></ul>
+        </div>
+    </div>
+    <div class="container">
         <a href="{{ url_for('network_tools') }}" class="rounded-link">Back to Network Tools</a>
     </div>
-
 </body>
 </html>

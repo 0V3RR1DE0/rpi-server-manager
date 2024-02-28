@@ -1,19 +1,24 @@
-from flask import Flask, render_template, request, session, redirect, flash, url_for, send_from_directory
+# app.py
+
+from flask import Flask, render_template, request, session, redirect, flash, url_for, send_from_directory, jsonify
 from flask_bcrypt import Bcrypt
 from datetime import timedelta
-from tools import system_monitor, network_logs, logger  # Import the modules
 from functools import wraps
 from tools.logger import log_access, log_file_upload
 import os
+from tools import system_monitor, network_logs as net_logs, logger  # Import the modules
 
+# Initialize Flask app
 app = Flask(__name__)
 bcrypt = Bcrypt(app)
 
-# Default password
+# Configuration
 default_password = '123456'
-
 UPLOAD_FOLDER = 'uploads'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+# Set the path for static files
+app._static_folder = os.path.abspath("static")
 
 # Try to read the secret key and hashed default password from the file
 try:
@@ -43,12 +48,17 @@ except FileNotFoundError:
 app.secret_key = secret_key
 app.permanent_session_lifetime = timedelta(minutes=5)
 
+# Utility Functions
+
 def log_page_access():
     """Log access to a page."""
     ip_address = request.remote_addr
-    log_access(ip_address)
+    action = f"Accessed {request.path}"
+    log_access(ip_address, action)
+
 
 def login_required(f):
+    """Decorator to require login for certain routes."""
     @wraps(f)
     def decorated_function(*args, **kwargs):
         if not session.get('logged_in'):
@@ -57,13 +67,23 @@ def login_required(f):
         return f(*args, **kwargs)
     return decorated_function
 
+# Routes
+
+@app.route('/get-logs')
+def get_logs():
+    logs = net_logs.get_network_logs()  # Corrected import
+    return jsonify(logs)
+
 @app.before_request
 def before_request():
-    if request.endpoint and request.endpoint != 'login' and not session.get('logged_in'):
-        return redirect(url_for('login'))
+    """Redirect to login if not logged in."""
+    if not session.get('logged_in'):
+        if request.endpoint != 'static' and request.endpoint != 'login':
+            return redirect(url_for('login'))
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    """Login route."""
     log_page_access()
     if request.method == 'POST':
         password_candidate = request.form['password']
@@ -80,6 +100,7 @@ def login():
 
 @app.route('/change-password', methods=['POST'])
 def change_password():
+    """Change password route."""
     global hashed_default_password  # Declare as a global variable
 
     if not session.get('logged_in'):
@@ -107,6 +128,7 @@ def change_password():
 
 @app.route('/upload', methods=['POST'])
 def upload_file():
+    """Upload file route."""
     if 'file' not in request.files:
         flash('No file part', 'error')
         return redirect(url_for('home'))
@@ -128,6 +150,7 @@ def upload_file():
 
 @app.route('/')
 def home():
+    """Home route."""
     log_page_access()
     if not session.get('logged_in'):
         flash('Please log in to access the home page.', 'info')
@@ -137,36 +160,44 @@ def home():
 @app.route('/system-monitor')
 @login_required
 def system_monitor_route():
+    """System monitor route."""
     log_page_access()
     return system_monitor.render_system_monitor()
 
 @app.route('/network-tools')
 @login_required
 def network_tools():
+    """Network tools route."""
     log_page_access()
     return render_template('network/network_tools.html')
 
-@app.route('/network-logs')
+@app.route('/network-tools/network-logs')
 @login_required
 def network_logs():
+    """Network logs route."""
     log_page_access()
-    return render_template('network/network_logs.html', network_logs=network_logs.get_network_logs())
+    # Retrieve and pass network logs data to the template
+    logs = net_logs.get_network_logs()  # Corrected import
+    return render_template('network/network_logs.html', logs=logs)
 
-@app.route('/network-statistics')
+@app.route('/network-tools/network-statistics')
 @login_required
 def network_statistics():
+    """Network statistics route."""
     log_page_access()
     return render_template('network/network_statistics.html')
 
 @app.route('/file-share')
 @login_required
 def file_share():
+    """File share route."""
     log_page_access()
     return render_template('file_sharing_service/file_share.html')
 
 @app.route('/file-share/files')
 @login_required
 def file_share_files():
+    """File share files route."""
     log_page_access()
     files = os.listdir(app.config['UPLOAD_FOLDER'])
     return render_template('file_sharing_service/files.html', files=files)
@@ -174,13 +205,16 @@ def file_share_files():
 @app.route('/file-share/download/<filename>')
 @login_required
 def download_file(filename):
+    """Download file route."""
     return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
 
 @app.route('/logout')
 def logout():
+    """Logout route."""
     session.pop('logged_in', None)
     flash('You have been logged out.', 'info')
     return redirect(url_for('login'))
 
+# Run the app
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)

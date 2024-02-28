@@ -50,10 +50,10 @@ rpi-server-manager/
 ├── static/
 │        ├── data/
 │        │      ├── logs/
-│        │      └──    └── log_{date}_{time}.log
+│        │      └──    └── log_{datetime}.log
 │        ├── js/
 │        │    ├── tools/
-│        │    │       └── system_monitor.js
+│        │    │       └── network_logs.js
 │        │    └── alerts.js
 │        └── styles.css
 │

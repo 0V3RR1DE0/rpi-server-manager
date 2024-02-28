@@ -1,16 +1,23 @@
 # network_logs.py
 
-import os
-from datetime import datetime
+import datetime
+
+def log_access(ip_address, action):
+    timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    log_entry = f"{timestamp}: {action} from {ip_address}"
+    write_to_log(log_entry)
+
+def write_to_log(log_entry):
+    current_date = datetime.datetime.now().strftime("%Y-%m-%d")
+    log_file_path = f'static/data/logs/log_{current_date}.log'
+    with open(log_file_path, 'a') as log_file:
+        log_file.write(log_entry + '\n')
 
 def get_network_logs():
-    """Read logs from the file and return them."""
-    log_file_path = generate_log_file_path()
-    with open(log_file_path, 'r') as file:
-        logs = file.readlines()
+    logs = []
+    current_date = datetime.datetime.now().strftime("%Y-%m-%d")
+    log_file_path = f'static/data/logs/log_{current_date}.log'
+    with open(log_file_path, 'r') as log_file:
+        for line in log_file:
+            logs.append(line.strip())  # Append each line of the log file as it is
     return logs
-
-def generate_log_file_path():
-    """Generate the path to the logs file."""
-    current_date_time = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
-    return f'static/data/logs/log_{current_date_time}.log'
