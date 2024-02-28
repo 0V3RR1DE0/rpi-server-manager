@@ -91,8 +91,8 @@ rpi-server-manager/
 
 ## Features that need to be fixed
 - [ ] Alerts/Notifications
-- [ ] Network Logs
-- [ ] Timeout to all html files
+- [x] Network Logs
+- [x] Timeout to all html files
 - [x] No login bypass in web panel
 
 ## Contributing
