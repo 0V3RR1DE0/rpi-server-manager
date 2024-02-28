@@ -1,8 +1,9 @@
 from flask import Flask, render_template, request, session, redirect, flash, url_for, send_from_directory
 from flask_bcrypt import Bcrypt
 from datetime import timedelta
-from tools import system_monitor
+from tools import system_monitor, network_logs, logger  # Import the modules
 from functools import wraps
+from tools.logger import log_access, log_file_upload
 import os
 
 app = Flask(__name__)
@@ -42,6 +43,11 @@ except FileNotFoundError:
 app.secret_key = secret_key
 app.permanent_session_lifetime = timedelta(minutes=5)
 
+def log_page_access():
+    """Log access to a page."""
+    ip_address = request.remote_addr
+    log_access(ip_address)
+
 def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
@@ -58,6 +64,7 @@ def before_request():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    log_page_access()
     if request.method == 'POST':
         password_candidate = request.form['password']
 
@@ -102,52 +109,70 @@ def change_password():
 def upload_file():
     if 'file' not in request.files:
         flash('No file part', 'error')
-        return redirect(url_for('index'))
+        return redirect(url_for('home'))
 
     file = request.files['file']
 
     if file.filename == '':
         flash('No selected file', 'error')
-        return redirect(url_for('index'))
+        return redirect(url_for('home'))
 
     if file:
+        # Log the file upload
+        ip_address = request.remote_addr
+        log_file_upload(ip_address, file.filename)
+        
         file.save(os.path.join(app.config['UPLOAD_FOLDER'], file.filename))
         flash('File uploaded successfully', 'success')
-        return redirect(url_for('index'))
+        return redirect(url_for('home'))
 
 @app.route('/')
 def home():
+    log_page_access()
     if not session.get('logged_in'):
         flash('Please log in to access the home page.', 'info')
         return redirect(url_for('login'))
     return render_template('index.html')
 
 @app.route('/system-monitor')
+@login_required
 def system_monitor_route():
+    log_page_access()
     return system_monitor.render_system_monitor()
 
 @app.route('/network-tools')
+@login_required
 def network_tools():
+    log_page_access()
     return render_template('network/network_tools.html')
 
 @app.route('/network-logs')
+@login_required
 def network_logs():
+    log_page_access()
     return render_template('network/network_logs.html', network_logs=network_logs.get_network_logs())
 
 @app.route('/network-statistics')
+@login_required
 def network_statistics():
+    log_page_access()
     return render_template('network/network_statistics.html')
 
 @app.route('/file-share')
+@login_required
 def file_share():
+    log_page_access()
     return render_template('file_sharing_service/file_share.html')
 
 @app.route('/file-share/files')
+@login_required
 def file_share_files():
+    log_page_access()
     files = os.listdir(app.config['UPLOAD_FOLDER'])
     return render_template('file_sharing_service/files.html', files=files)
 
 @app.route('/file-share/download/<filename>')
+@login_required
 def download_file(filename):
     return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
 

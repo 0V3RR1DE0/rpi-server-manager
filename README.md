@@ -42,6 +42,42 @@ This is a simple web application for managing a Raspberry Pi server. Users can u
 - Shared files are displayed on the main page, where users can click on them to download.
 - Users can also view any uploaded files by clicking the "View Files" link.
 
+## File Structure
+```
+rpi-server-manager/
+│
+├── app.py
+├── static/
+│        ├── data/
+│        │      ├── logs/
+│        │      └──    └── log_{date}_{time}.log
+│        ├── js/
+│        │    ├── tools/
+│        │    │       └── system_monitor.js
+│        │    └── alerts.js
+│        └── styles.css
+│
+├── templates/
+│           ├── file_sharing_service/
+│           │                      ├──  file_share.html
+│           │                      └──  files.html
+│           │
+│           ├── network/
+│           │         ├──  network_logs.html
+│           │         ├──  network_statistics.html
+│           │         └──  network_tools.html
+│           │
+│           ├── index.html
+│           ├── login.html
+│           └── system_monitor.html
+│
+├── tools/
+│       ├── network_logs.py
+│       ├── logger.py
+│       └── system_monitor.py
+└── uploads/
+```
+
 ## Planned Features
 - [ ] Client Program
     - Allows you to manage multiple computers.

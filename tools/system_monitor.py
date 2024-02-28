@@ -1,6 +1,6 @@
+# system_monitor.py
+
 from flask import render_template
-# system_monitor.py
-# system_monitor.py
 import psutil
 
 def get_system_info():
