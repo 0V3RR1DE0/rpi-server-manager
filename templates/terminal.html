@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Raspberry Pi Server Management Suite Terminal</title>
+  <style>
+    body {
+      font-family: monospace;
+      background-color: #0e0e0e;
+      color: #ffffff;
+      margin: 0;
+      padding: 0;
+    }
+    .header {
+      padding: 10px;
+      background-color: #073642;
+      color: #93a1a1;
+    }
+    .content {
+      padding: 10px;
+    }
+    .path {
+      font-weight: bold;
+    }
+    .input-area {
+      margin-top: 10px;
+    }
+    .input-area input[type="text"] {
+      width: calc(100% - 20px);
+      border: none;
+      outline: none;
+      font-family: monospace;
+      font-size: inherit;
+      background-color: transparent;
+      color: #ffffff;
+    }
+    .input-area input[type="text"]:focus {
+      outline: none;
+    }
+    .output {
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    Raspberry Pi Server Management Suite Terminal<br>
+    Use chelp to view custom commands...
+  </div>
+  <div class="content">
+    <div class="output" id="output"></div>
+    <div class="input-area">
+        <input type="text" id="commandInput" placeholder="{{ current_path }}&gt;"> <!-- Placeholder initially empty -->
+    </div>
+  </div>
+
+  <script>
+    const commandInput = document.getElementById('commandInput');
+    const output = document.getElementById('output');
+
+    commandInput.focus();
+
+    commandInput.addEventListener('keydown', async (e) => {
+      if (e.key === 'Enter') {
+        const command = commandInput.value.trim();
+
+        if (command === '') return;
+
+        const response = await fetch('/execute', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+          },
+          body: `command=${encodeURIComponent(command)}`
+        });
+
+        const responseData = await response.json();
+        const data = responseData.output;
+
+        // Clear the input field
+        commandInput.value = '';
+
+        // Print the output
+        printOutput(data);
+
+        // Update placeholder with the current path
+        commandInput.placeholder = responseData.current_path + '>';
+
+        // Check for custom commands
+        if (command === 'chelp') {
+            outputContent.textContent = "Custom commands:\nchelp - Display list of available commands\nexit - Exit the terminal";
+        } else if (command === 'exit') {
+            window.location.href = "/"; // Redirect to home page
+        }
+
+        // Scroll to the bottom of the output
+        window.scrollTo(0, document.body.scrollHeight);
+      }
+    });
+
+    // Function to print output
+    function printOutput(data) {
+      const lines = data.split('\n');
+      lines.forEach(line => {
+        const outputContent = document.createElement('div');
+        outputContent.textContent = line;
+        output.appendChild(outputContent);
+      });
+    }
+  </script>
+</body>
+</html>

@@ -6,11 +6,14 @@ from datetime import timedelta
 from functools import wraps
 from tools.logger import log_access, log_file_upload
 import os
-from tools import system_monitor, network_logs as net_logs, logger  # Import the modules
+from tools import system_monitor, network_logs as net_logs, logger
+from flask_socketio import SocketIO, emit
+import subprocess
 
 # Initialize Flask app
 app = Flask(__name__)
 bcrypt = Bcrypt(app)
+socketio = SocketIO(app)
 
 # Configuration
 default_password = '123456'
@@ -48,7 +51,7 @@ except FileNotFoundError:
 app.secret_key = secret_key
 app.permanent_session_lifetime = timedelta(minutes=5)
 
-# Utility Functions
+# Functions
 
 def log_page_access():
     """Log access to a page."""
@@ -67,7 +70,13 @@ def login_required(f):
         return f(*args, **kwargs)
     return decorated_function
 
-# Routes
+# Routes    
+    
+"""
+##########################################################################
+################################ ~BANNER~ ################################
+##########################################################################
+"""
 
 @app.route('/get-logs')
 def get_logs():
@@ -215,6 +224,38 @@ def logout():
     flash('You have been logged out.', 'info')
     return redirect(url_for('login'))
 
+@app.route('/terminal', methods=['GET', 'POST'])
+@login_required
+def terminal():
+    """Terminal route."""
+    current_path = os.getcwd()
+    log_page_access()
+    return render_template('terminal.html', current_path=current_path)  # Pass the current path to the template
+
+@app.route('/execute', methods=['POST'])
+def execute():
+    command = request.form['command']
+    output = ""
+    current_path = os.getcwd()  # Get the current path before executing the command
+    try:
+        if command.startswith("cd "):
+            directory = command.split(" ", 1)[1]
+            os.chdir(directory)
+            output = os.getcwd()
+        elif command == "cd..":  # Check if the command is 'cd..'
+            os.chdir('..')  # Go back one directory
+            output = os.getcwd()
+        elif command == "cls" or command == "clear":  # Check if the command is 'cls' or 'clear'
+            output = ""  # Clear the output area silently
+        else:
+            result = subprocess.run(command, shell=True, capture_output=True, text=True)
+            output = result.stdout.strip() if result.stdout else result.stderr.strip()
+    except Exception as e:
+        output = str(e)
+    return jsonify({'output': output, 'current_path': current_path})  # Return both output and current path
+
+
+
 # Run the app
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    socketio.run(app, host='0.0.0.0', port=5000, debug=True)

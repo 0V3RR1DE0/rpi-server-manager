@@ -1,7 +1,7 @@
 # RPI-SERVER-MANAGER
 
 ## Introduction
-This is a simple web application for managing a Raspberry Pi server. Users can upload files to the server and view/download files shared by others.
+Server management web application that allows file share, web terminal, other stuff.
 
 ## Features
 - [x] View server generic info [disk space, cpu usage, others]
@@ -9,6 +9,7 @@ This is a simple web application for managing a Raspberry Pi server. Users can u
 - [x] View and download shared files.
 - [x] Dynamic File Tabs
 - [x] Responsive design for both desktop and mobile devices.
+- [x] Terminal
 
 ## Technologies Used
 - HTML
@@ -69,7 +70,8 @@ rpi-server-manager/
 │           │
 │           ├── index.html
 │           ├── login.html
-│           └── system_monitor.html
+│           ├── system_monitor.html
+│           └── terminal.html
 │
 ├── tools/
 │       ├── network_logs.py
