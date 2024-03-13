@@ -93,9 +93,7 @@ rpi-server-manager/
 
 ## Features that need to be fixed
 - [ ] Alerts/Notifications
-- [x] Network Logs
-- [x] Timeout to all html files
-- [x] No login bypass in web panel
+- [ ] Terminal multi line output
 
 ## Contributing
 Contributions are welcome! If you'd like to contribute to this project, please fork the repository and submit a pull request with your changes.
